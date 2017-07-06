@@ -2204,19 +2204,28 @@ void UnwrappedLineParser::parseObjCInterfaceOrImplementation() {
   if (FormatTok->Tok.is(tok::colon)) {
     nextToken();
     nextToken(); // base class name
-  } else if (FormatTok->Tok.is(tok::l_paren))
-    // Skip category, if present.
+
+    if (FormatTok->Tok.is(tok::less))
+      // First < after base class could be lightweight generic list,
+      // or a protocol list. parse with generics because it can also
+      // parse a protocol list.
+      parseObjCLightweightGenericList();
+
+    // There can still be category parens, skip them
+    if (FormatTok->Tok.is(tok::l_paren))
+      // Skip category, if present.
+      parseParens();
+  
+    if (FormatTok->Tok.is(tok::less))
+      // Second <> block can only be a protocol list. 
+      parseObjCProtocolList();
+  } else if (FormatTok->Tok.is(tok::l_paren)) {
+    // This is a category or a header extension.
     parseParens();
 
-  if (FormatTok->Tok.is(tok::less))
-    // First < after base class could be lightweight generic list,
-    // or a protocol list. parse with generics because it can also
-    // parse a protocol list.
-    parseObjCLightweightGenericList();
-
-  if (FormatTok->Tok.is(tok::less))
-    // Second <> block can only be a protocol list. 
-    parseObjCProtocolList();
+    if (FormatTok->Tok.is(tok::less))
+      parseObjCProtocolList();
+  }
   
   if (FormatTok->Tok.is(tok::l_brace)) {
     if (Style.BraceWrapping.AfterObjCDeclaration)

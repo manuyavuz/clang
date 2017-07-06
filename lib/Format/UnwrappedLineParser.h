@@ -121,6 +121,7 @@ private:
   // expression.
   void parseRecord(bool ParseAsExpr = false);
   void parseObjCProtocolList();
+  void parseObjCLightweightGenericList();
   void parseObjCUntilAtEnd();
   void parseObjCInterfaceOrImplementation();
   bool parseObjCProtocol();

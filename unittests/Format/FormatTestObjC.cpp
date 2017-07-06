@@ -235,6 +235,10 @@ TEST_F(FormatTestObjC, FormatObjCInterfaceGenerics) {
                  "+ (id)init;\n"
                  "@end");
 
+    verifyFormat("@interface Foo <T> () <Baz, Quux>\n"
+                 "+ (id)init;\n"
+                 "@end");
+
     verifyFormat("@interface Foo : Bar <id<MyProtocol>> <Baz, Quux>\n"
                  "+ (id)init;\n"
                  "+ (id<MyProtocol>)protocolId;\n"

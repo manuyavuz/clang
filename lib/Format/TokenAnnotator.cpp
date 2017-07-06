@@ -2357,7 +2357,10 @@ bool TokenAnnotator::spaceRequiredBetween(const AnnotatedLine &Line,
   if (Right.isOneOf(tok::semi, tok::comma))
     return false;
   if (Right.is(tok::less) && Line.Type == LT_ObjCDecl) {
-    bool IsProtocolList = Left.is(tok::greater) || Left.is(tok::colon);
+    bool IsProtocolList =
+      (Line.First->Next->Tok.getObjCKeywordID() == tok::objc_protocol ||
+       Left.is(tok::greater) || Left.is(tok::r_paren) ||
+       Left.Previous->is(tok::colon));
     return IsProtocolList && Style.ObjCSpaceBeforeProtocolList;
   }
   if (Right.is(tok::less) && Left.is(tok::kw_template))
@@ -2742,7 +2745,7 @@ bool TokenAnnotator::spaceRequiredBefore(const AnnotatedLine &Line,
        !Right.is(tok::r_paren)))
     return true;
   if (Left.is(TT_TemplateCloser) && Right.is(tok::l_paren) &&
-      Right.isNot(TT_FunctionTypeLParen))
+      Right.isNot(TT_FunctionTypeLParen) && Line.Type != LT_ObjCDecl)
     return Style.SpaceBeforeParens == FormatStyle::SBPO_Always;
   if (Right.is(TT_TemplateOpener) && Left.is(tok::r_paren) &&
       Left.MatchingParen && Left.MatchingParen->is(TT_OverloadedOperatorLParen))

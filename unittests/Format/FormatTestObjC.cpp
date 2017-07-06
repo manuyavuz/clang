@@ -230,6 +230,22 @@ TEST_F(FormatTestObjC, FormatObjCSynchronized) {
                "}\n");
 }
 
+TEST_F(FormatTestObjC, FormatObjCInterfaceGenerics) {
+    verifyFormat("@interface Foo : Bar <NSObject *> <Baz, Quux>\n"
+                 "+ (id)init;\n"
+                 "@end");
+
+    verifyFormat("@interface Foo : Bar <id<MyProtocol>> <Baz, Quux>\n"
+                 "+ (id)init;\n"
+                 "+ (id<MyProtocol>)protocolId;\n"
+                 "@end");
+
+    verifyFormat("@interface Foo : Bar <Baz, Quux>\n"
+                 "+ (id)init;\n"
+                 "+ (id<MyProtocol>)protocolId;\n"
+                 "@end");
+}
+
 TEST_F(FormatTestObjC, FormatObjCInterface) {
   verifyFormat("@interface Foo : NSObject <NSSomeDelegate> {\n"
                "@public\n"

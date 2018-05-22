@@ -975,7 +975,7 @@ unsigned ContinuationIndenter::moveStateToNextToken(LineState &State,
 
   if (Current.isOneOf(tok::comma, TT_BinaryOperator))
     State.Stack.back().NoLineBreakInOperand = false;
-  if (Current.is(TT_InheritanceColon))
+  if (Current.isOneOf(TT_InheritanceColon, Keywords.kw_implements))
     State.Stack.back().AvoidBinPacking = true;
   if (Current.is(tok::lessless) && Current.isNot(TT_OverloadedOperator)) {
     if (State.Stack.back().FirstLessLess == 0)
